@@ -1,5 +1,5 @@
 //REACT
-import React, {useState} from 'react';
+import React, {useState, useContext} from 'react';
 import {Link} from 'react-router-dom';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import MenuItem from '@material-ui/core/MenuItem';
@@ -18,6 +18,10 @@ import ArchiveIcon from '@material-ui/icons/Archive';
 import SettingsIcon from '@material-ui/icons/Settings';
 import Divider from '@material-ui/core/Divider';
 
+import { UserContext } from '../UserContext';
+import { AuthContext } from '../AuthContext';
+import {PostContext} from '../PostContext';
+import axios from 'axios';
 //MUI COMPONENTS
 import {
     AppBar,
@@ -54,6 +58,13 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Sidebar = () => {
+  const { user, setUser } = useContext(UserContext);
+  const { auth, setAuth } = useContext(AuthContext);
+  const { post, setPost } = useContext(PostContext);
+  const [classData, setClassData] = useState({
+    className: ''
+  })
+  // console.log(user);
     //styles
     const classes = useStyles();
 
@@ -81,6 +92,10 @@ const Sidebar = () => {
   const handleCloseModal = () => {
     setOpen(false);
   };
+  const handleCreateModal = ()=> {
+    //
+    setOpen(false);
+  }
 
     //state
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -89,7 +104,32 @@ const Sidebar = () => {
     const toggleDrawer = () => {
         setDrawerOpen(!drawerOpen);
     };
-
+    const handleSubmit = async(e) => {
+      e.preventDefault();
+      //axios request to the backend
+      const url = 'https://e-kaksha.herokuapp.com/home/createClass';
+      axios.post(url, {name : classData.className, ownerId : user.email, ownerName : user.firstName})
+        .then((res) => {
+          let ok = res.data.Success;
+          let classId = res.data.classId;
+          console.log(ok);
+          if (ok) {
+            //append a new card to the list of cards
+            console.log("class created with id : " + classId + ".");
+            setPost({arr : [...post.arr, {ownerName : user.firstName, name : classData.className, id : classId}]});
+          }
+          else {
+            console.log("class not created.");
+          }
+        })
+        .catch(err => console.log(err));
+    }
+    const handleLogout = async(e)=>{
+      e.preventDefault();
+      setUser(null);
+      setAuth(false);
+      setPost({arr : []});
+    }
     const drawerItems = [
         {
             text: 'To Do',
@@ -134,6 +174,7 @@ const Sidebar = () => {
                 
                 <div>
 
+              {/* PLUS ICON TO ADD NEW CLASS */}
 
                {/* <div> */}
                <IconButton
@@ -150,6 +191,7 @@ const Sidebar = () => {
               <Dialog fullWidth open={openIt} onClose={handleCloseModal} aria-labelledby="form-dialog-title">
         <DialogTitle id="form-dialog-title"> Create Classroom </DialogTitle>
         {/* join a class if student */}
+          <form className={classes.form} autoComplete="off" noValidate onSubmit={handleSubmit} >
         <DialogContent>
           <DialogContentText>
             
@@ -160,18 +202,20 @@ const Sidebar = () => {
             id="name"
             label="Enter Classroom Name"
             type="email"
+            onChange={(e) => setClassData({ ...classData, className: e.target.value })}
             fullWidth
-          />
+            />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
             Cancel
           </Button>
-          <Button onClick={handleCloseModal} color="primary">
+          <Button onClick={handleCreateModal} color="primary" type="submit">
             Create
           </Button> 
           {/* join if student */}
         </DialogActions>
+            </form>
       </Dialog>
                {/* </div> */}
 
@@ -202,7 +246,7 @@ const Sidebar = () => {
               >
                 <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}><span style={{color: 'red'}} >Log Out</span></MenuItem>
+                <MenuItem onClick={handleLogout}><span style={{color: 'red'}} >Log Out</span></MenuItem>
               </Menu>
             </div>
 

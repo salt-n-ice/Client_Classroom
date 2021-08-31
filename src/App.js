@@ -8,6 +8,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import Dashboard from './components/Dashboard.js'
 import {UserContext} from './UserContext'
 import {AuthContext} from './AuthContext'
+import { PostContext } from './PostContext'
 import Classroom from './components/classroom.js'
 
 const App = () => {
@@ -16,6 +17,8 @@ const App = () => {
     const value = useMemo(()=>({user, setUser}), [user, setUser]);
     const [auth, setAuth ] = useState(false);
     const authValue = useMemo(()=>({auth, setAuth}), [auth , setAuth]);
+    const [post, setPost] = useState({arr : []});
+    const postValue = useMemo(()=>({post, setPost}), [post , setPost]);
     useEffect(() => {
         dispatch(signUp)
     }, [dispatch])
@@ -24,7 +27,7 @@ const App = () => {
         <Router>
             <UserContext.Provider value = {value}>
             <AuthContext.Provider value = {authValue}>
-
+            <PostContext.Provider value = {postValue}>
         <Route path="/" exact render={(props) => (
             <>
               <Front/>
@@ -35,6 +38,7 @@ const App = () => {
         
         <Route path="/dashboard" component={Dashboard}/>
         <Route path="/classroom" component={Classroom}/>
+        </PostContext.Provider>
         </AuthContext.Provider>
         </UserContext.Provider>
         </Router>

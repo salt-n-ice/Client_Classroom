@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -14,7 +14,11 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import { useDispatch } from 'react-redux'
 import { signUp, signIn } from '../../actions/users'
-
+import { UserContext } from '../../UserContext';
+import { AuthContext } from '../../AuthContext';
+import {PostContext} from '../../PostContext';
+import {Redirect} from 'react-router-dom'
+import axios from 'axios'
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -50,7 +54,9 @@ const useStyles = makeStyles((theme) => ({
 
 export default function SignIn() {
   const classes = useStyles();
-  
+  const { user, setUser } = useContext(UserContext);
+  const { auth, setAuth } = useContext(AuthContext);
+  const { post, setPost } = useContext(PostContext);
   const [userData, setUserData] = useState({
     email: '',
     password: ''
@@ -59,8 +65,34 @@ export default function SignIn() {
   const dispatch = useDispatch()
 
   const handleSubmit = (e) => {
-    e.preventDefault()
-    dispatch(signIn(userData))
+    e.preventDefault();
+    //axios request to the backend
+    const url = 'https://e-kaksha.herokuapp.com/home/signin';
+    axios.post(url, userData)
+      .then((res) => {
+        let ok = res.data.Authenticated;
+        let userId = res.data.userId;
+        let userName  = res.data.userName;
+        let newArr = res.data.hist;
+        console.log(userName);
+        console.log(newArr);
+        console.log(ok);
+        if (ok) {
+          setAuth(true);
+          setUser({id : userId, email : userData.email,firstName : userName, password : userData.password});
+          setPost({arr : newArr});
+          console.log("its ok");
+          console.log(newArr);
+        }
+        else {
+          setAuth(false);
+          setUser(null);
+          setPost({arr : []});
+          console.log("its not ok");
+        }
+        
+      })
+      .catch(err => console.log(err));
   }
 
   return (
@@ -70,6 +102,7 @@ export default function SignIn() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
+        {auth ? (<Redirect to="/dashboard" />) : (console.log("..."))}
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>

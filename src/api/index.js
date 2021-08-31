@@ -3,7 +3,7 @@ import { useState, useContext } from 'react'
 import { UserContext } from '../UserContext'
 import {AuthContext} from '../AuthContext'
 
-const url = 'http://localhost:5000/home'
+const url = 'https://e-kaksha.herokuapp.com/home'
 
 export const signUp = (newUser) => axios.post(url+"/signup",newUser).then((res) => {
     

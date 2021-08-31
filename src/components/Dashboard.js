@@ -12,10 +12,17 @@ import Sidebar from './sidebar'
 import ClassCard from './class_card'
 import { UserContext } from '../UserContext'
 import { AuthContext } from '../AuthContext'
+import { PostContext } from '../PostContext'
+import {Redirect} from 'react-router-dom'
 
 export const Dashboard = () => {
   const { user, setUser } = useContext(UserContext);
   const { auth, setAuth } = useContext(AuthContext);
+  const {post, setPost} = useContext(PostContext);
+  if(!auth){
+    setUser(null);
+    setPost({arr : []});
+  }
   // console.log(user);
   //get all the classes linked to the current user.
   //use for loop to show them in the similar fashion as below.
@@ -38,66 +45,17 @@ export const Dashboard = () => {
         </div>
         
         <div>
-        <ClassCard
-              creatorName="Pewdiepie"
-              creatorPhoto="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTUxNzIxODgzNTg5NDIwMzAw/pewdiepie_gettyimages-501661286.jpg"
-              name="Floor Gang"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
+        {auth ? (console.log("...")) : (<Redirect to="/signin"/>)}
+      {post.arr.map((c)=>(
 
         <ClassCard
-              creatorName="Mr. Beast"
-              creatorPhoto="https://www.businessinsider.in/thumb/msid-72480478,width-700,resizemode-4,imgsize-74408/21-year-old-YouTuber-MrBeast-was-one-of-the-most-viewed-YouTube-creators-in-2019-check-out-how-he-got-his-start-and-found-success-with-elaborate-stunts-and-giveaways.jpg"
-              name="Beast Boii"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
-        <ClassCard
-              creatorName="Pewdiepie"
+              creatorName={c.ownerName}
               creatorPhoto="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTUxNzIxODgzNTg5NDIwMzAw/pewdiepie_gettyimages-501661286.jpg"
-              name="Floor Gang"
-              id={"This is beast"}
+              name={c.name}
+              id={c.id}
               style={{ margin: 15 }}
             />
-
-        <ClassCard
-              creatorName="Mr. Beast"
-              creatorPhoto="https://www.businessinsider.in/thumb/msid-72480478,width-700,resizemode-4,imgsize-74408/21-year-old-YouTuber-MrBeast-was-one-of-the-most-viewed-YouTube-creators-in-2019-check-out-how-he-got-his-start-and-found-success-with-elaborate-stunts-and-giveaways.jpg"
-              name="Beast Boii"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
-        <ClassCard
-              creatorName="Pewdiepie"
-              creatorPhoto="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTUxNzIxODgzNTg5NDIwMzAw/pewdiepie_gettyimages-501661286.jpg"
-              name="Floor Gang"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
-
-        <ClassCard
-              creatorName="Mr. Beast"
-              creatorPhoto="https://www.businessinsider.in/thumb/msid-72480478,width-700,resizemode-4,imgsize-74408/21-year-old-YouTuber-MrBeast-was-one-of-the-most-viewed-YouTube-creators-in-2019-check-out-how-he-got-his-start-and-found-success-with-elaborate-stunts-and-giveaways.jpg"
-              name="Beast Boii"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
-        <ClassCard
-              creatorName="Pewdiepie"
-              creatorPhoto="https://www.biography.com/.image/ar_1:1%2Cc_fill%2Ccs_srgb%2Cg_face%2Cq_auto:good%2Cw_300/MTUxNzIxODgzNTg5NDIwMzAw/pewdiepie_gettyimages-501661286.jpg"
-              name="Floor Gang"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
-
-        <ClassCard
-              creatorName="Mr. Beast"
-              creatorPhoto="https://www.businessinsider.in/thumb/msid-72480478,width-700,resizemode-4,imgsize-74408/21-year-old-YouTuber-MrBeast-was-one-of-the-most-viewed-YouTube-creators-in-2019-check-out-how-he-got-his-start-and-found-success-with-elaborate-stunts-and-giveaways.jpg"
-              name="Beast Boii"
-              id={"This is beast"}
-              style={{ margin: 15 }}
-            />
+      ))}
         </div>
       
         </div>

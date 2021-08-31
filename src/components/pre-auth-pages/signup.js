@@ -17,6 +17,7 @@ import { useDispatch } from 'react-redux'
 import { signUp } from '../../actions/users'
 import { UserContext } from '../../UserContext';
 import { AuthContext } from '../../AuthContext';
+import {PostContext} from '../../PostContext';
 import {Redirect} from 'react-router-dom'
 function Copyright() {
   return (
@@ -54,7 +55,9 @@ const useStyles = makeStyles((theme) => ({
 export default function SignUp() {
   const { user, setUser } = useContext(UserContext);
   const { auth, setAuth } = useContext(AuthContext);
+  const { post, setPost } = useContext(PostContext);
   const [userData, setUserData] = useState({
+    id : '',
     firstName: '',
     lastName: '',
     email: '',
@@ -68,7 +71,7 @@ export default function SignUp() {
   const handleSubmit = async(e) => {
     e.preventDefault();
     //axios request to the backend
-    const url = 'http://localhost:5000/home/signup';
+    const url = 'https://e-kaksha.herokuapp.com/home/signup';
     axios.post(url, userData)
       .then((res) => {
         let ok = res.data.Authenticated;
@@ -81,6 +84,7 @@ export default function SignUp() {
         else {
           setAuth(false);
           setUser(null);
+          setPost({arr : []});
           console.log("its not ok");
         }
         
@@ -94,7 +98,7 @@ export default function SignUp() {
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
-        {auth ? (<Redirect to="/dashboard" />) : (console.log("Account already exists."))}
+        {auth ? (<Redirect to="/dashboard" />) : ((console.log("...")))}
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>

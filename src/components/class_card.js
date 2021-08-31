@@ -79,7 +79,7 @@ function ClassCard({ name, creatorName, creatorPhoto, id, style }) {
         <div className={classes.classCard__creatorName}>{creatorName}</div>
         <img src={creatorPhoto} className={classes.classCard__creatorPhoto} />
       </div>
-      <div className={classes.classCard__middle}></div>
+      <div className={classes.classCard__middle}>{"ClassId : " + id}</div>
       <hr></hr>
       <div className={classes.classCard__lower}>
         <IconButton>
